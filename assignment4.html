@@ -59,8 +59,11 @@
 				const outpt = 'Price: ${price[d]} | MPG ${mpgs[c]}'
 				var p = parseInt(price[d]);
 				var m = parseInt(mpgs[c]);
-				var o = 0;
-				o = p + (miles/m)*cost;
+				var o = "$";
+				o += (p + (miles/m)*cost).toFixed(2);
+				o += "/yr | $ ";
+				o += ((p + (miles/m)*cost)/12).toFixed(2);
+				o += "/mo";
                                 var text1 = document.createTextNode(o);
                                 td.appendChild(text1);
                                 tr.appendChild(td);
