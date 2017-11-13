@@ -1,0 +1,27 @@
+/*Name: Thomas Kiley, thomas_kiley1@student.uml.edu
+ *     Computer Science Major, Umass Lowell
+ *         Comp.4610, GUI Programming I
+ *             Created 10/19/2017
+ *                 Last updated by tk 10/19/2017
+ *                   */
+
+body{
+background-color: powderblue;
+}
+h1{
+color: blue;
+}
+h2{
+color: yellow;
+}
+table,ul,ol,tr,td{
+border: 2px solid pink;
+left: 3%;
+}
+td{
+left: 5px;
+}
+h1,h2,h3,h4{
+margin: auto;
+}
+

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<!--Name: Thomas Kiley, thomas_kiley1@student.uml.edu
+    Computer Science Major, Umass Lowell
+    Comp.4610, GUI Programming I
+    Created 11/12/2017
+    Last updated by tk 11/12/2017
+  -->
+
+
+<html lang="en">
+<head>
+	<title>Assignment 4</title>	   
+     	<link id="style" rel="stylesheet" type="text/css" href="css/stylesheet3.css">
+
+</head>
+<body id="bdy">
+<h1> Price Calculator</h1>
+<script>
+	var mpgs = new Array();
+	var price = new Array();
+	var table1 = new Array();
+	function submit() {
+		var miles = document.getElementById("mdr").value;
+		var cost = document.getElementById("cpg").value;
+		// this checks to make sure all fields are filled out.
+		if (!miles || !cost || price.length == 0 || mpgs.length == 0) {
+		return;
+		}
+		var table = document.createElement('table');
+		//this loop dynamically creates the table from the input submitted by the user.
+		for (var c = -1; c < mpgs.length; c++){
+			if(c>=0){
+			var tr = document.createElement('tr');
+			var td = document.createElement('td');
+			var text1 = document.createTextNode(mpgs[c]);
+			td.appendChild(text1);
+			tr.appendChild(td);
+			}
+			else {
+			var tr = document.createElement('tr');
+                        var td = document.createElement('td');
+                        var text1 = document.createTextNode('MPG/Price');
+                        td.appendChild(text1);
+                        tr.appendChild(td);
+			}
+			if(c==-1){
+			for (var d = 0; d < price.length; d++){
+				var td = document.createElement('td');
+	                        var text1 = document.createTextNode(price[d]);
+	                        td.appendChild(text1);
+				tr.appendChild(td);
+			}
+			}
+			else{
+			for (var d = 0; d < price.length; d++){
+                                var td = document.createElement('td');
+				//output is in cost per year.
+				const outpt = 'Price: ${price[d]} | MPG ${mpgs[c]}'
+				var p = parseInt(price[d]);
+				var m = parseInt(mpgs[c]);
+				var o = 0;
+				o = p + (miles/m)*cost;
+                                var text1 = document.createTextNode(o);
+                                td.appendChild(text1);
+                                tr.appendChild(td);
+                        }
+
+			}
+			table.appendChild(tr);
+		}
+	document.getElementById("bdy").appendChild(table);
+	 //These functions allow for dynamic table sizing. 
+	}		
+	function add_mpg() {
+		mpgs.push(document.getElementById("mpg").value);
+		document.getElementById("mpg").value = '';
+	}
+	function add_price() {
+                price.push(document.getElementById("price").value);
+		document.getElementById("price").value = '';
+        }
+
+</script>
+<!-- Two forms to manage Ueser Input  -->
+	<form style="margin-top:50px">
+		Price of Gas (per gallon):<br>
+                <input type="number" name="cpg" id="cpg" style="margin-bottom:20px"><br>
+		Miles Driven (per year):<br>
+                <input type="number" name="mdr" id="mdr" style="margin-bottom:20px"><br>
+        	MPG:<br>
+        	<input type="number" name="mpg" id="mpg" style="margin-bottom:20px"><br>
+
+	</form>
+	<button type="button" onclick="add_mpg()">add</button>
+
+	<form style="margin-top:50px">
+                Price:<br>
+                <input type="number" name="price" id="price" style="margin-bottom:20px"><br>
+
+        </form>
+	<button type="button" onclick="add_price()">add</button>
+	<br>
+	<br>
+	<button type="button" id="submit" onclick="submit()">Submit</button>
+	<p> output in cost per month. <br> <b>All fields are required.</b> </p>
+
+</body>
+
