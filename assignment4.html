@@ -12,7 +12,10 @@
 <head>
 	<title>Assignment 4</title>	   
      	<link id="style" rel="stylesheet" type="text/css" href="css/stylesheet3.css">
-
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+<!--	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> -->
+<!--	<script src="js/jquery.validate.js"></script> -->
 </head>
 <body id="bdy">
 <h1> Price Calculator</h1>
@@ -21,11 +24,17 @@
 	var price = new Array();
 	var table1 = new Array();
 	function submit() {
+		var tables = document.getElementsByTagName("TABLE");
+		for (var i=tables.length-1; i>=0;i-=1)
+   			if (tables[i]) tables[i].parentNode.removeChild(tables[i]);
 		var miles = document.getElementById("mdr").value;
 		var cost = document.getElementById("cpg").value;
 		// this checks to make sure all fields are filled out.
 		if (!miles || !cost || price.length == 0 || mpgs.length == 0) {
 		return;
+		}
+		if(miles < 500 || miles > 50000 || cost < 2 || cost > 3 || isNaN(cost) || isNaN(miles)) {
+			return;
 		}
 		var table = document.createElement('table');
 		//this loop dynamically creates the table from the input submitted by the user.
@@ -76,37 +85,51 @@
 	 //These functions allow for dynamic table sizing. 
 	}		
 	function add_mpg() {
+		var m = document.getElementById("mpg").value;
+		if (m < 8 || m > 35) {
+			return;
+		}
 		mpgs.push(document.getElementById("mpg").value);
 		document.getElementById("mpg").value = '';
 	}
 	function add_price() {
+		var p = document.getElementById("price").value;
+		if(p <4000 || p>200000) {
+			return;
+		}		
                 price.push(document.getElementById("price").value);
 		document.getElementById("price").value = '';
         }
+	function clear() {
+	mpgs = [];
+	price = [];
+	}
 
 </script>
 <!-- Two forms to manage Ueser Input  -->
-	<form style="margin-top:50px">
-		Price of Gas (per gallon):<br>
-                <input type="number" name="cpg" id="cpg" style="margin-bottom:20px"><br>
-		Miles Driven (per year):<br>
-                <input type="number" name="mdr" id="mdr" style="margin-bottom:20px"><br>
-        	MPG:<br>
-        	<input type="number" name="mpg" id="mpg" style="margin-bottom:20px"><br>
+	<form style="margin-top:50px" id="input_form">
+		Price of Gas ($/gal, between 2.00 and 3.00):<br>
+		<input type="text" name="cpg" id="cpg" data-validation="number"  data-validation-allowing="range[2;3],float"> <br>
+		Miles Driven (per year, between 500 and 50,000):<br>
+                <input type="text" name="mdr" id="mdr" data-validation="number"  data-validation-allowing="range[500;50000],float"> <br>
+        	MPG (between 8 and 35):<br>
+                <input type="text" name="mpg" id="mpg" data-validation="number"  data-validation-allowing="range[8;35],float"> <br>
 
 	</form>
 	<button type="button" onclick="add_mpg()">add</button>
 
-	<form style="margin-top:50px">
-                Price:<br>
-                <input type="number" name="price" id="price" style="margin-bottom:20px"><br>
-
+	<form style="margin-top:50px" id="pr">
+                Price (between 4,000 and 200,000):<br>
+		<input type="text" name="price" id="price" data-validation="number"  data-validation-allowing="range[4000:200000],float"> <br>
         </form>
+	<script>
+		$.validate();
+	</script>
 	<button type="button" onclick="add_price()">add</button>
 	<br>
 	<br>
 	<button type="button" id="submit" onclick="submit()">Submit</button>
-	<p> output in cost per month. <br> <b>All fields are required.</b> </p>
+	<p> output in cost per month over one year. <br> <b>All fields are required.</b> </p>
 
 </body>
 
