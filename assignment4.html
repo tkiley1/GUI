@@ -3,19 +3,21 @@
 <!--Name: Thomas Kiley, thomas_kiley1@student.uml.edu
     Computer Science Major, Umass Lowell
     Comp.4610, GUI Programming I
-    Created 11/12/2017
-    Last updated by tk 11/12/2017
+    Created 12/3/2017
+    Last updated by tk 12/3/2017
   -->
 
 
 <html lang="en">
 <head>
-	<title>Assignment 4</title>	   
+	<title>Assignment 6</title>	   
      	<link id="style" rel="stylesheet" type="text/css" href="css/stylesheet3.css">
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
-<!--	<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> -->
-<!--	<script src="js/jquery.validate.js"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-form-validator/2.3.26/jquery.form-validator.min.js"></script>
+	<script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body id="bdy">
 <h1> Price Calculator</h1>
@@ -23,12 +25,17 @@
 	var mpgs = new Array();
 	var price = new Array();
 	var table1 = new Array();
+	var tabCount = 0;
 	function submit() {
 		var tables = document.getElementsByTagName("TABLE");
 		for (var i=tables.length-1; i>=0;i-=1)
    			if (tables[i]) tables[i].parentNode.removeChild(tables[i]);
 		var miles = document.getElementById("mdr").value;
 		var cost = document.getElementById("cpg").value;
+		//var dynamicTable = document.getElementById("tabs");
+		//var inner = "<a href='#tabs-$(tabCount)' id='tab'></a>";
+		//dynamicTable.innerHTML += inner;
+		var tab = document.getElementById("tab");
 		// this checks to make sure all fields are filled out.
 		if (!miles || !cost || price.length == 0 || mpgs.length == 0) {
 		return;
@@ -81,6 +88,7 @@
 			}
 			table.appendChild(tr);
 		}
+
 	document.getElementById("bdy").appendChild(table);
 	 //These functions allow for dynamic table sizing. 
 	}		
@@ -90,7 +98,6 @@
 			return;
 		}
 		mpgs.push(document.getElementById("mpg").value);
-		document.getElementById("mpg").value = '';
 	}
 	function add_price() {
 		var p = document.getElementById("price").value;
@@ -98,7 +105,6 @@
 			return;
 		}		
                 price.push(document.getElementById("price").value);
-		document.getElementById("price").value = '';
         }
 	function clear() {
 	mpgs = [];
@@ -106,30 +112,140 @@
 	}
 
 </script>
+<script>
+  $(document).ready(function() {
+//some of my attempt at tabbed interfacing
+    jQuery('.tabs .tab-links a').on('click', function(e)  {
+        var currentAttrValue = jQuery(this).attr('href');
+ 
+        jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
+ 
+        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+ 
+        e.preventDefault();
+    });
+//these functions handle setting up the sliders and the two way binding
+    $( "#gasSlider" ).slider({
+      range: "max",
+      min: 2.00,
+      max: 3.00,
+      value: 2.00,
+      step: 0.05,
+      slide: function( event, ui ) {
+        $( "#cpg" ).val( ui.value );
+	submit();
+      }
+    });
+    $( "#cpg" ).val( $( "#gasSlider" ).slider( "value" ) );
+    $( "#milesSlider" ).slider({
+      range: "max",
+      min: 500,
+      max: 50000,
+      value: 500,
+      step: 10,
+      slide: function( event, ui ) {
+        $( "#mdr" ).val( ui.value );
+	submit();
+      }
+    });
+    $( "#mdr" ).val( $( "#milesSlider" ).slider( "value" ) );
+    
+    $( "#mpgSlider" ).slider({
+      range: "max",
+      min: 8,
+      max: 35,
+      value: 8,
+      step: 1,
+      slide: function( event, ui ) {
+        $( "#mpg" ).val( ui.value );
+	add_mpg();
+	submit();
+      }
+    });
+    $( "#mpg" ).val( $( "#mpgSlider" ).slider( "value" ) );
+    $( "#priceSlider" ).slider({
+      range: "max",
+      min: 4000,
+      max: 200000,
+      value: 4000,
+      step: 200,
+      slide: function( event, ui ) {
+        $( "#price" ).val( ui.value );
+	add_price();
+	submit();
+      }
+    });
+    $( "#price" ).val( $( "#priceSlider" ).slider( "value" ) );
+    
+    $("#price").change(function(event, ui) {
+      var data = $("#price").val();
+      $("#priceSlider").slider("value", data);
+	add_price();
+	submit();
+    });
+     $("#mpg").change(function(event, ui) {
+      var data = $("#mpg").val();
+      $("#mpgSlider").slider("value", data);
+	add_mpg();
+	submit();
+    });
+     $("#cpg").change(function(event, ui) {
+      var data = $("#cpg").val();
+      $("#gasSlider").slider("value", data);
+	submit();
+    });
+     $("#mdr").change(function(event, ui) {
+      var data = $("#mdr").val();
+      $("#milesSlider").slider("value", data);
+	submit();
+    });
+
+
+  } );
+  </script>
 <!-- Two forms to manage Ueser Input  -->
 	<form style="margin-top:50px" id="input_form">
 		Price of Gas ($/gal, between 2.00 and 3.00):<br>
-		<input type="text" name="cpg" id="cpg" data-validation="number"  data-validation-allowing="range[2;3],float"> <br>
+		<input type="text" name="cpg" id="cpg" data-validation="number"  data-validation-allowing="range[2;3],float"> 
+		<div id="gasSlider"></div>
+		<br>
 		Miles Driven (per year, between 500 and 50,000):<br>
-                <input type="text" name="mdr" id="mdr" data-validation="number"  data-validation-allowing="range[500;50000],float"> <br>
+                <input type="text" name="mdr" id="mdr" data-validation="number"  data-validation-allowing="range[500;50000],float"> 
+		<div id="milesSlider"></div>
+		<br>
         	MPG (between 8 and 35):<br>
-                <input type="text" name="mpg" id="mpg" data-validation="number"  data-validation-allowing="range[8;35],float"> <br>
+                <input type="text" name="mpg" id="mpg" data-validation="number"  data-validation-allowing="range[8;35],float"> 
+		<div id="mpgSlider"></div>
+		<br>
 
 	</form>
 	<button type="button" onclick="add_mpg()">add</button>
 
 	<form style="margin-top:50px" id="pr">
                 Price (between 4,000 and 200,000):<br>
-		<input type="text" name="price" id="price" data-validation="number"  data-validation-allowing="range[4000:200000],float"> <br>
+		<input type="text" name="price" id="price" data-validation="number"  data-validation-allowing="range[4000;200000],float"> 
+		<div id="priceSlider"></div>
+		<br>
         </form>
 	<script>
-		$.validate();
+	$(document).ready(function() {
+		$("#cpg").validate();
+	});
 	</script>
 	<button type="button" onclick="add_price()">add</button>
 	<br>
 	<br>
 	<button type="button" id="submit" onclick="submit()">Submit</button>
 	<p> output in cost per month over one year. <br> <b>All fields are required.</b> </p>
-
+	<!-- more of my attempted tabbed interface -->
+	<div class="tabs" id="tabs">
+    		<ul class="tab-links" id="tab-links">
+        		<li class="active"><a href="#tab1">Tab #1</a></li>
+			<li><a href="#tab2">Tab #2</a></li>
+    		</ul>
+	</div>
+	<div class="tab-content">
+    		<div id="tab1" class="tab active">
+        	</div>
 </body>
 
